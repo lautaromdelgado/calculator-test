@@ -5,7 +5,6 @@ import (
 
 	calculator "github.com/lautaromdelgado/calculator-test/internal/Calculator"
 	cuestom_errors "github.com/lautaromdelgado/calculator-test/internal/errors"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -14,18 +13,22 @@ type DividerTestSuite struct {
 	underTest calculator.IDivider
 }
 
-func TestDivide(t *testing.T) {
-	divider := calculator.NewDivider()
-
-	result, err := divider.Divide(10, 2)
-	assert.Nil(t, err)
-	assert.Equal(t, 5.0, result)
+func TestDividerTestSuite(t *testing.T) {
+	suite.Run(t, new(DividerTestSuite))
 }
 
-func TestDivide_ByZero(t *testing.T) {
-	divider := calculator.NewDivider()
+func (d *DividerTestSuite) SetupTest() {
+	d.underTest = calculator.NewDivider()
+}
 
-	result, err := divider.Divide(10, 0)
-	assert.Equal(t, cuestom_errors.ErrDivisionByZero, err)
-	assert.Equal(t, 0.0, result)
+func (d *DividerTestSuite) TestDivide() {
+	result, err := d.underTest.Divide(10, 2)
+	d.Nil(err)
+	d.Equal(5.0, result)
+}
+
+func (d *DividerTestSuite) TestDivide_ByZero() {
+	result, err := d.underTest.Divide(10, 0)
+	d.Equal(cuestom_errors.ErrDivisionByZero, err)
+	d.Equal(0.0, result)
 }
